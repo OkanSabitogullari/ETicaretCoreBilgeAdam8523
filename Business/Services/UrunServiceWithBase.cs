@@ -12,7 +12,11 @@ namespace Business.Services
 {
     public interface IUrunService :IService<UrunModel, Urun, ETicaretContext>
     {
-        Result<List<UrunModel>> List(UrunFilterModel filtre);
+        #region Sayfalama
+        int GetTotalRecordsCount(UrunFilterModel filtre);
+        Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi);
+        List<int> GetPages(int toplamKayitSayisi, int sayfadakiKayitSayisi);
+        #endregion
     }
 
     public class UrunService : IUrunService
@@ -164,7 +168,8 @@ namespace Business.Services
                             BirimFiyatiDisplay = urun.BirimFiyati.ToString("C2"),
                             SonKullanmaTarihiDisplay = urun.SonKullanmaTarihi.HasValue ? urun.SonKullanmaTarihi.Value.ToString("yyyy-MM-dd") : "",
                             KategoriAdiDisplay = subKategoriler.Adi,
-                            MagazaAdiDisplay = subMagazalar.Adi
+                            MagazaAdiDisplay = subMagazalar != null ? subMagazalar.Adi : "",
+                            MagazaId = subMagazalar != null ? subMagazalar.Id : 0
                         };
             return query;
         }
@@ -198,18 +203,51 @@ namespace Business.Services
             Repo.Update(entity);
             return new SuccessResult();
         }
-
-        public Result<List<UrunModel>> List(UrunFilterModel filtre)
+        #region Sayfalama
+        private IQueryable<UrunModel> Query(UrunFilterModel filtre)
         {
             var query = Query();
-            if (filtre.KategoriId.HasValue)
-                query = query.Where(q => q.KategoriId == filtre.KategoriId.Value);
-            if (!string.IsNullOrWhiteSpace(filtre.UrunAdi))
-                query = query.Where(q => q.Adi.ToUpper().Contains(filtre.UrunAdi.ToUpper().Trim()));
-            if (filtre.BirimFiyatiBaslangic != null)
-                query = query.Where(q => q.BirimFiyati >= filtre.BirimFiyatiBaslangic.Value);
+            if (filtre != null)
+            {
+                if (filtre.KategoriId.HasValue)
+                    query = query.Where(q => q.KategoriId == filtre.KategoriId.Value);
+                if (!string.IsNullOrWhiteSpace(filtre.UrunAdi))
+                    query = query.Where(q => q.Adi.ToUpper().Contains(filtre.UrunAdi.ToUpper().Trim()));
+                if (filtre.BirimFiyatiBaslangic != null)
+                    query = query.Where(q => q.BirimFiyati >= filtre.BirimFiyatiBaslangic.Value);
+                if (filtre.BirimFiyatiBitis.HasValue)
+                    query = query.Where(q => q.BirimFiyati <= filtre.BirimFiyatiBitis.Value);
+                if (filtre.MagazaIdleri != null && filtre.MagazaIdleri.Count > 0)
+                    query = query.Where(q => filtre.MagazaIdleri.Contains(q.MagazaId));
+                // List<int> magazaIdleri --> int magazaId
+            }
+            return query;
+        }
+
+        public Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi)
+        {
+            var query = Query(filtre);
+            query = query.Skip((sayfaNo - 1) * sayfadakiKayitSayisi).Take(sayfadakiKayitSayisi);
             var list = query.ToList();
             return new SuccessResult<List<UrunModel>>(list);
         }
+
+        public int GetTotalRecordsCount(UrunFilterModel filtre)
+        {
+            //return Query(filtre).ToList().DistinctBy(q => q.Id).Count();
+            return Query(filtre).Count();
+        }
+
+        public List<int> GetPages(int toplamKayitSayisi, int sayfadakiKayitSayisi)
+        {
+            List<int> sayfalar = new List<int>();
+            int toplamSayfaSayisi = (int)Math.Ceiling((double)toplamKayitSayisi / (double)sayfadakiKayitSayisi);
+            for (int sayfa = 1; sayfa <= toplamSayfaSayisi; sayfa++)
+            {
+                sayfalar.Add(sayfa);
+            }
+            return sayfalar;
+        }
+        #endregion
     }
 }

@@ -6,6 +6,7 @@ using Business.Services.Bases;
 using DataAccess.Contexts;
 using DataAccess.Entities;
 using DataAccess.Repositories.Bases;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Services
 {
@@ -77,6 +78,21 @@ namespace Business.Services
             entity.Aciklamasi = model.Aciklamasi?.Trim();
             Repo.Update(entity);
             return new SuccessResult("Kategori başarıyla güncellendi.");
+        }
+
+        //public Result<List<KategoriModel>> GetCategoriesAsync()
+        //{
+        //    Task<List<KategoriModel>> task = Query().ToListAsync();
+        //    List<KategoriModel> kategoriler = task.Result;
+        //    return new SuccessResult<List<KategoriModel>>(kategoriler);
+
+        //}
+
+        public async Task<Result<List<KategoriModel>>> GetCategoriesAsync()
+        {
+            List<KategoriModel> kategoriler = await Query().ToListAsync();
+            return new SuccessResult<List<KategoriModel>>(kategoriler);
+
         }
     }
 }

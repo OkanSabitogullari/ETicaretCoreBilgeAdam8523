@@ -14,6 +14,7 @@ using Business.Models;
 using Microsoft.AspNetCore.Authorization;
 using MvcWebUI.Models;
 using Business.Models.Filters;
+using MvcWebUI.Settings;
 
 namespace MvcWebUI.Controllers
 {
@@ -44,16 +45,22 @@ namespace MvcWebUI.Controllers
         //    return View(eTicaretContext.ToList());
         //}
         [AllowAnonymous]
-        public IActionResult Index(UrunFilterModel filtre)
+        public IActionResult Index(UrunlerIndexViewModel viewModel)
         {
-            var result = _urunService.List(filtre);
-            UrunlerIndexViewModel viewModel = new UrunlerIndexViewModel()
-            {
-                Urunler = result.Data,
-                Kategoriler = new SelectList(_kategoriService.Query().ToList(), "Id", "Adi", filtre.KategoriId),
-                Filtre = filtre
-            };
-            //return View(model);
+            var result = _urunService.List(viewModel.Filtre, viewModel.SayfaNo, AppSettings.SayfadakiKayitSayisi);
+            //UrunlerIndexViewModel viewModel = new UrunlerIndexViewModel()
+            //{
+            //    Urunler = result.Data,
+            //    Kategoriler = new SelectList(_kategoriService.Query().ToList(), "Id", "Adi", filtre.KategoriId),
+            //    Magazalar = new MultiSelectList(_magazaService.Query().ToList(), "Id", "Adi", filtre.MagazaIdleri),
+            //    Filtre = filtre
+            //};
+            viewModel.Urunler = result.Data;
+            viewModel.Kategoriler = new SelectList(_kategoriService.Query().ToList(), "Id", "Adi", viewModel.Filtre?.KategoriId);
+            viewModel.Magazalar = new MultiSelectList(_magazaService.Query().ToList(), "Id", "Adi", viewModel.Filtre?.MagazaIdleri);
+            viewModel.ToplamKayitSayisi = _urunService.GetTotalRecordsCount(viewModel.Filtre);
+            var sayfalar = _urunService.GetPages(viewModel.ToplamKayitSayisi, AppSettings.SayfadakiKayitSayisi);
+            viewModel.Sayfalar = new SelectList(sayfalar, viewModel.SayfaNo);
             return View(viewModel);
         }
 

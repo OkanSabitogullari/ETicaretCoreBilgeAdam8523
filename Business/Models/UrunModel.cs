@@ -52,6 +52,8 @@ namespace Business.Models
 
         [DisplayName("Mağazalar")]
         public string MagazaAdiDisplay { get; set; }
+
+        public int MagazaId { get; set; }
         #endregion
     }
 }
