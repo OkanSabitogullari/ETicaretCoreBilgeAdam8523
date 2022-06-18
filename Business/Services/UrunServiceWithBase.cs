@@ -14,8 +14,9 @@ namespace Business.Services
     {
         #region Sayfalama
         int GetTotalRecordsCount(UrunFilterModel filtre);
-        Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi);
+        Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi, string expression, bool isDirectionAscending);
         List<int> GetPages(int toplamKayitSayisi, int sayfadakiKayitSayisi);
+        List<string> GetExpressions();
         #endregion
     }
 
@@ -224,10 +225,23 @@ namespace Business.Services
             return query;
         }
 
-        public Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi)
+        public Result<List<UrunModel>> List(UrunFilterModel filtre, int sayfaNo, int sayfadakiKayitSayisi,string expression, bool isDirectionAscending)
         {
             var query = Query(filtre);
+            switch (expression)
+            {
+                case "Ürün Adi":
+                    query = isDirectionAscending ? query.OrderBy(q => q.Adi) : query.OrderByDescending(q => q.Adi);
+                    break;
+                case "Birim Fiyatı":
+                    query = isDirectionAscending ? query.OrderBy(q => q.BirimFiyati) : query.OrderByDescending(q => q.BirimFiyati);
+                    break;
+                default:
+                    query = isDirectionAscending ? query.OrderBy(q => q.SonKullanmaTarihi) : query.OrderByDescending(q => q.SonKullanmaTarihi);
+                    break;
+            }
             query = query.Skip((sayfaNo - 1) * sayfadakiKayitSayisi).Take(sayfadakiKayitSayisi);
+
             var list = query.ToList();
             return new SuccessResult<List<UrunModel>>(list);
         }
@@ -249,5 +263,11 @@ namespace Business.Services
             return sayfalar;
         }
         #endregion
+        public List<string> GetExpressions() => new List<string>()
+        {
+            "Ürün Adi", "Birim Fiyatı", "Son Kullanma Tarihi"
+        };
     }
+
+    
 }

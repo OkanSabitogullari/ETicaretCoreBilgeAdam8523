@@ -47,7 +47,7 @@ namespace MvcWebUI.Controllers
         [AllowAnonymous]
         public IActionResult Index(UrunlerIndexViewModel viewModel)
         {
-            var result = _urunService.List(viewModel.Filtre, viewModel.SayfaNo, AppSettings.SayfadakiKayitSayisi);
+            var result = _urunService.List(viewModel.Filtre, viewModel.SayfaNo, AppSettings.SayfadakiKayitSayisi, viewModel.Expression, viewModel.IsDirectionAscending);
             //UrunlerIndexViewModel viewModel = new UrunlerIndexViewModel()
             //{
             //    Urunler = result.Data,
@@ -56,11 +56,12 @@ namespace MvcWebUI.Controllers
             //    Filtre = filtre
             //};
             viewModel.Urunler = result.Data;
-            viewModel.Kategoriler = new SelectList(_kategoriService.Query().ToList(), "Id", "Adi", viewModel.Filtre?.KategoriId);
-            viewModel.Magazalar = new MultiSelectList(_magazaService.Query().ToList(), "Id", "Adi", viewModel.Filtre?.MagazaIdleri);
+            viewModel.Kategoriler = new SelectList(_kategoriService.Query().ToList(), "Id", "Adi");
+            viewModel.Magazalar = new MultiSelectList(_magazaService.Query().ToList(), "Id", "Adi");
             viewModel.ToplamKayitSayisi = _urunService.GetTotalRecordsCount(viewModel.Filtre);
             var sayfalar = _urunService.GetPages(viewModel.ToplamKayitSayisi, AppSettings.SayfadakiKayitSayisi);
-            viewModel.Sayfalar = new SelectList(sayfalar, viewModel.SayfaNo);
+            viewModel.Sayfalar = new SelectList(sayfalar);
+            viewModel.Siralar = new SelectList(_urunService.GetExpressions());
             return View(viewModel);
         }
 

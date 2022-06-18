@@ -46,6 +46,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 #endregion
 
+#region Session
+builder.Services.AddSession(config =>
+{
+    config.IdleTimeout = TimeSpan.FromMinutes(30);  // tanýmlamazsan 20 dakika
+});
+#endregion
 ConnectionConfig.ConnectionString = builder.Configuration.GetConnectionString("ETicaretContext");
 IConfigurationSection section = builder.Configuration.GetSection(nameof(AppSettings));
 section.Bind(new AppSettings());
@@ -89,6 +95,18 @@ app.UseAuthentication();
 #endregion
 
 app.UseAuthorization();
+
+#region Session
+app.UseSession();
+#endregion
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+});
 
 app.MapControllerRoute(
     name: "default",

@@ -13,5 +13,8 @@ namespace MvcWebUI.Models
         public int SayfaNo { get; set; } = 1;
         public SelectList Sayfalar { get; set; }
         public int ToplamKayitSayisi { get; set; }
+        public string Expression { get; set; }
+        public SelectList Siralar { get; set; }
+        public bool IsDirectionAscending { get; set; }
     }
 }

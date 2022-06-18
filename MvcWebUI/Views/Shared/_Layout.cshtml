@@ -13,16 +13,16 @@
     <div class="wrapper">
         <nav id="sidebar">
             <div class="sidebar-header">
-                <a class="a-sidebar" asp-action="Index" asp-controller="Home"><h3>@AppSettings.Baslik</h3></a>
+                <a class="a-sidebar" asp-action="Index" asp-controller="Home" asp-area=""><h3>@AppSettings.Baslik</h3></a>
             </div>
             <ul class="list-unstyled components">
                 <li class="nav-item">
-                    <a class="a-sidebar" asp-action="Index" asp-controller="Urunler"> Ürünler</a>
+                    <a class="a-sidebar" asp-action="Index" asp-controller="Urunler" asp-area=""> Ürünler</a>
                 </li>
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
-                        <a class="a-sidebar" asp-action="Index" asp-controller="Kategoriler"> Kategoriler</a>
+                        <a class="a-sidebar" asp-action="Index" asp-controller="Kategoriler" asp-area=""> Kategoriler</a>
                     </li>
                 }
             </ul>
@@ -31,10 +31,10 @@
                 <ul class="list-unstyled admin">
                     <p>Admin</p>
                     <li class="nav-item">
-                        <a class="a-navbar" asp-action="Seed" asp-controller="Database"> Verileri Sıfırla</a>
+                        <a class="a-navbar" asp-action="Seed" asp-controller="Database" asp-area=""> Verileri Sıfırla</a>
                     </li>
                     <li class="nav-item">
-                        <a class="a-navbar" asp-action="Index" asp-controller="Magazalar"> Mağazalar</a>
+                        <a class="a-navbar" asp-action="Index" asp-controller="Magazalar" asp-area=""> Mağazalar</a>
                     </li>
                 </ul>
             }
@@ -63,22 +63,26 @@
                         <ul class="navbar-nav mr-auto">
                             @if (!User.Identity.IsAuthenticated)
                             {
+                                 
                                 <li class="nav-item">
-                                    <a class="a-navbar" asp-action="Kayit" asp-controller="Hesaplar"> Kayıt</a>
+                                    <a class="a-navbar" asp-action="Kayit" asp-controller="Hesaplar"  asp-area=""> Kayıt</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="a-navbar" asp-action="Giris" asp-controller="Hesaplar"> Giriş</a>
+                                    <a class="a-navbar" asp-action="Giris" asp-controller="Hesaplar"  asp-area=""> Giriş</a>
                                 </li>
                             }
                             else
                             {
+                                <li class="nav-item">
+                                    <a class="a-navbar" asp-action="Getir" asp-controller="Home"  asp-area="Sepet"> Sepet</a>
+                                 </li>
                                 <li class="nav-item">
                                     <div class="div-navbar">
                                         <span class="s-navbar">@User.Identity.Name</span>
                                     </div>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="a-navbar" asp-action="Cikis" asp-controller="Hesaplar"> Çıkış</a>
+                                    <a class="a-navbar" asp-action="Cikis" asp-controller="Hesaplar"  asp-area=""> Çıkış</a>
                                 </li>
                             }
                         </ul>

@@ -11,7 +11,7 @@ namespace Business.Models
         [Required(ErrorMessage = "{0} gereklidir!")]
         [MinLength(2, ErrorMessage = "{0} minimum {1} karakter olmalıdır!")]
         [MaxLength(100, ErrorMessage = "{0} maksimum {1} karakter olmalıdır!")]
-        [DisplayName("Adı")]
+        [DisplayName("Ürün Adı")]
         public string Adi { get; set; }
 
         [StringLength(500, ErrorMessage = "{0} maksimum {1} karakter olmalıdır!")]
@@ -54,6 +54,9 @@ namespace Business.Models
         public string MagazaAdiDisplay { get; set; }
 
         public int MagazaId { get; set; }
+
+        [DisplayName("İmaj")]
+        public string ImgSrcDisplay { get; set; }
         #endregion
     }
 }

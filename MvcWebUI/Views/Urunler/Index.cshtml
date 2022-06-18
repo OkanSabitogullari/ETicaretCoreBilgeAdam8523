@@ -24,6 +24,11 @@
     <p class="text-danger">@TempData["Error"]</p>
 }
 
+@if (TempData["SepetMessage"] != null)
+{
+  <p class="text-primary">@TempData["SepetMessage"]</p>
+}
+
 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 {
     <p>
@@ -43,13 +48,13 @@
                     <label asp-for="Filtre.UrunAdi"></label>
                 </div>
                 <div class="col-3">
-                    <input asp-for="Filtre.UrunAdi" class="form-control" />
+                    <input asp-for="Filtre.UrunAdi" class="form-control input" />
                 </div>
                 <div class="col-1">
                     <label asp-for="Filtre.KategoriId"></label>
                 </div>
                 <div class="col-3">
-                    <select asp-for="Filtre.KategoriId" class="form-control select2" asp-items="@Model.Kategoriler">
+                    <select asp-for="Filtre.KategoriId" class="form-control select2 input" asp-items="@Model.Kategoriler">
                         <option value="">-- Tümü --</option>
                     </select>
                 </div>
@@ -58,9 +63,9 @@
                 </div>
                 <div class="col-3">
                     <div class="input-group">
-                        <input asp-for="Filtre.BirimFiyatiBaslangic" class="form-control" />
+                        <input asp-for="Filtre.BirimFiyatiBaslangic" class="form-control input" />
                         <span class="input-group-text">-</span>
-                        <input asp-for="Filtre.BirimFiyatiBitis" class="form-control" />
+                        <input asp-for="Filtre.BirimFiyatiBitis" class="form-control input" />
                     </div>
                 </div>
             </div>
@@ -69,7 +74,7 @@
                     <label asp-for="Filtre.MagazaIdleri"></label>
                 </div>
                 <div class="col-5">
-                    <select multiple asp-for="Filtre.MagazaIdleri" asp-items="Model.Magazalar" class="form-control select2"></select>
+                    <select multiple asp-for="Filtre.MagazaIdleri" asp-items="Model.Magazalar" class="form-control select2 input"></select>
                 </div>
             </div>
 
@@ -89,8 +94,13 @@
                 <div class="col-1">
                     <select asp-for="SayfaNo" asp-items="Model.Sayfalar" class="form-control" id="sayfa"></select>
                 </div>
-            </div>
-
+                <div class="col-3">
+                    <select asp-for="Expression" asp-items="Model.Siralar" class="form-control" id="sira"></select>
+                </div>
+                <div class="col-2">
+                    <input asp-for="IsDirectionAscending">Artan
+                </div>
+             </div>
             <br />
 
                 <p class="bg-success text-black white">@Model.ToplamKayitSayisi adet kayıt bulundu.</p>
@@ -160,6 +170,9 @@
                                 <td>
                                     @if (User.Identity.IsAuthenticated)
                                     {
+                                        <a asp-action="Ekle" asp-controller="Home" asp-area="Sepet" asp-route-urunId="@item.Id">Sepete Ekle</a>
+
+                                        @:&nbsp;|&nbsp;
 
                                         <a asp-action="Details" asp-route-id="@item.Id">Detay</a>
 
@@ -211,6 +224,10 @@
         //    $("#form").submit();
         //});
         $(".select2").select2();
+        $(".input").change(function() {
+            $("#sayfa").prop("disabled", true);
+            $("#sayfa").val("1");
+        });
     });
 
     function sil(id) {

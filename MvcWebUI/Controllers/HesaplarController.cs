@@ -38,7 +38,8 @@ namespace MvcWebUI.Controllers
                     List<Claim> claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.Name, result.Data.KullaniciAdi),
-                        new Claim(ClaimTypes.Role, result.Data.RolAdiDisplay)
+                        new Claim(ClaimTypes.Role, result.Data.RolAdiDisplay),
+                        new Claim(ClaimTypes.Sid, result.Data.Id.ToString())
                     };
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var principal = new ClaimsPrincipal(identity);
