@@ -24,6 +24,11 @@ namespace DataAccess.Entities
 
         public Kategori Kategori { get; set; }
 
+        [Column(TypeName = "image")]
+        public byte[] Image { get; set; }
+
+        [StringLength(5)]
+        public string ImageExtension { get; set; }
         public List<UrunMagaza> UrunMagazalar { get; set; }
     }
 }
