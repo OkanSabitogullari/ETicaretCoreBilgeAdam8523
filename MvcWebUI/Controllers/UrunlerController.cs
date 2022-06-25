@@ -278,7 +278,7 @@ namespace MvcWebUI.Controllers
 
         public IActionResult DeleteImage(int urunId)
         {
-            _urunService.DeleteImage(id);
+            _urunService.DeleteImage(urunId);
             return RedirectToAction(nameof(Details), new { id = urunId });
         }
 	}

@@ -1,6 +1,7 @@
 ﻿using AppCore.Records.Bases;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Business.Models
 {
@@ -35,9 +36,11 @@ namespace Business.Models
         [Required(ErrorMessage = "{0} gereklidir!")]
         public int? KategoriId { get; set; }
 
+        [JsonIgnore]
         public byte[] Image { get; set; }
 
         [StringLength(5)]
+        [JsonIgnore]
         public string ImageExtension { get; set; }
         #endregion
 
@@ -58,9 +61,11 @@ namespace Business.Models
         [DisplayName("Mağazalar")]
         public string MagazaAdiDisplay { get; set; }
 
+        [JsonIgnore]
         public int MagazaId { get; set; }
 
         [DisplayName("İmaj")]
+        [JsonIgnore]
         public string ImgSrcDisplay { get; set; }
         #endregion
     }
